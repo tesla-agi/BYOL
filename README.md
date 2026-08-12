@@ -1,4 +1,4 @@
-# BYOL from Scratch
+# BYOL 
 
 A from-scratch PyTorch implementation of **BYOL** (Bootstrap Your Own Latent) — self-supervised representation learning with no labels, no negative pairs, and no decoder. Trained and evaluated on CIFAR-10.
 
