@@ -14,7 +14,11 @@ Two augmented views of one image are pushed through two towers:
 
 - **Online tower** — encoder → projector → predictor, trained by gradients.
 - **Target tower** — encoder → projector (no predictor), frozen, updated only as an EMA of the online weights.
+![BYOL architecture](assets/byol_figure2.png)
 
+> Figure 2 from Grill et al. (2020), *Bootstrap Your Own Latent*. Online path (top):
+> encoder → projector → predictor. Target path (bottom): stops at the projector, with
+> stop-gradient and EMA-updated weights. Reproduced from the original paper for reference.
 The online tower predicts the target tower's output; the loss is the normalized MSE (equivalently `2 − 2·cos`) between them, symmetrized over both views. The learning signal comes entirely from the augmentations: because two views share content but differ in nuisances (crop, colour, blur), the only way to agree is to encode what is invariant and discard the rest.
 
 Collapse (encoder outputs a constant for every input) is prevented by three asymmetries: the **predictor** (online only), the **stop-gradient** (on the target), and the **EMA** target.
