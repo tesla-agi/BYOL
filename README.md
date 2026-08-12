@@ -14,7 +14,7 @@ Two augmented views of one image are pushed through two towers:
 
 - **Online tower** — encoder → projector → predictor, trained by gradients.
 - **Target tower** — encoder → projector (no predictor), frozen, updated only as an EMA of the online weights.
-![BYOL architecture](assets/byol_img.png)
+![BYOL architecture](byol_img.png)
 
 > Figure 2 from Grill et al. (2020), *Bootstrap Your Own Latent*. Online path (top):
 > encoder → projector → predictor. Target path (bottom): stops at the projector, with
