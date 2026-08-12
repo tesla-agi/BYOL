@@ -1,4 +1,4 @@
-# BYOL 
+# BYOL
 
 A from-scratch PyTorch implementation of **BYOL** (Bootstrap Your Own Latent) — self-supervised representation learning with no labels, no negative pairs, and no decoder. Trained and evaluated on CIFAR-10.
 
@@ -71,6 +71,23 @@ CIFAR-10 downloads automatically to `./data/`. Checkpoints are written to `./che
 
 ---
 
+## Which asymmetry actually prevents collapse? (the SimSiam test)
+
+BYOL has three asymmetries that could each be the thing stopping collapse: the **predictor**, the **stop-gradient**, and the **EMA** target. SimSiam is the ablation that tells them apart — it **deletes the EMA entirely**. Its "target" is just the online encoder+projector read through a stop-gradient: same weights, same step, no lag.
+
+```
+BYOL     target = EMA copy of online (separate, lagged weights)  +  stop-grad  +  predictor
+SimSiam  target = online itself, stop-gradient applied           +  stop-grad  +  predictor
+                  (no EMA, no separate target network)
+```
+
+SimSiam still does **not** collapse. So **EMA is not strictly necessary** — the load-bearing wall against collapse is **stop-gradient + predictor**. EMA is a *buttress*: it stabilizes training and improves final quality, but it is not what closes the constant-output shortcut. (This also resolves the "BYOL τ=0 vs SimSiam" confusion — same effective τ, different machinery: BYOL τ=0 still keeps a *separate* one-step-stale target network, while SimSiam has no separate network at all.)
+
+This implementation uses the full BYOL setup (EMA target) because the EMA buttress helps final probe accuracy at negligible cost.
+
+---
+
 ## Reference
 
-Grill et al., *Bootstrap Your Own Latent: A New Approach to Self-Supervised Learning* (2020).
+- Grill et al., *Bootstrap Your Own Latent: A New Approach to Self-Supervised Learning* (2020).
+- Chen &amp; He, *Exploring Simple Siamese Representation Learning* (SimSiam, 2020).
